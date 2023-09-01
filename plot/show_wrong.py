@@ -2,7 +2,7 @@ from tensorflow.keras.datasets import mnist
 from tensorflow.keras.models import load_model
 import numpy as np
 
-from show_tools import show_digits
+from plot.show_tools import show_digits
 
 
 # Find some data where the model makes wrong predictions

@@ -1,22 +1,27 @@
-import sys
-from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QPushButton, QLabel, QVBoxLayout, QHBoxLayout, QSizePolicy, QGraphicsScene, QGraphicsView
+from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QPushButton, QLabel, QVBoxLayout, QHBoxLayout, \
+    QSizePolicy, QGraphicsScene, QGraphicsView
 from PyQt5.QtGui import QPainter, QColor, QPen, QBrush, QCursor
 from PyQt5.QtCore import Qt
 
-from predict import get_digit
+import sys
 
-from time import sleep
+from predict import get_digit
 
 
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
 
-        # Initialize the UI components
         self.initUI()
-
-        # Initialize the pixel matrix
         self.pixel_matrix = [[0 for i in range(28)] for j in range(28)]
+
+        self.is_recognized: bool = False
+        self.default_level_text = None
+        self.scene = None
+        self.view = None
+        self.run_button = None
+        self.clear_button = None
+        self.output_label = None
 
     def initUI(self):
         # Set the window title
@@ -44,7 +49,7 @@ class MainWindow(QMainWindow):
 
         # Create the label for the output text
         self.is_recognized = False
-        self.deafult_lavel_text = "Click run to recognize a number"
+        self.default_level_text = "Click run to recognize a number"
         self.output_label = QLabel(self.deafult_lavel_text, self)
         self.output_label.setWordWrap(True)
         self.output_label.setAlignment(Qt.AlignTop)
@@ -62,14 +67,13 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(widget)
 
     def keyPressEvent(self, event):
-        # sleep(0.02)
         pixel_size = 10
         pos = QCursor()
         x = pos.pos().x()
-        x = int(x*28/1920)
+        x = int(x * 28 / 1920)
         y = pos.pos().y()
         y = int(y * 28 / 1080)
-        bias = [(0,0), (1,0), (-1,0), (0,1), (0,-1), (1,1), (1, -1), (-1, 1), (-1, -1)]
+        bias = [(0, 0), (1, 0), (-1, 0), (0, 1), (0, -1), (1, 1), (1, -1), (-1, 1), (-1, -1)]
         if 1 <= x < 27 and 1 <= y < 27:
             if self.is_recognized:
                 self.is_recognized = False
@@ -80,8 +84,9 @@ class MainWindow(QMainWindow):
             self.scene.addEllipse(x * pixel_size, y * pixel_size, pixel_size, pixel_size, pen, brush)
             self.pixel_matrix[y][x] = 255
             for x_bias, y_bias in bias:
-                self.scene.addEllipse((x+x_bias) * pixel_size, (y+y_bias) * pixel_size, pixel_size, pixel_size, pen, brush)
-                self.pixel_matrix[y+y_bias][x+x_bias] = 255
+                self.scene.addEllipse((x + x_bias) * pixel_size, (y + y_bias) * pixel_size, pixel_size, pixel_size, pen,
+                                      brush)
+                self.pixel_matrix[y + y_bias][x + x_bias] = 255
 
     def run(self):
         # Call the my_func() function with the pixel matrix as the argument
@@ -97,7 +102,7 @@ class MainWindow(QMainWindow):
         self.pixel_matrix = [[0 for i in range(28)] for j in range(28)]
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     app = QApplication(sys.argv)
     window = MainWindow()
     window.show()
