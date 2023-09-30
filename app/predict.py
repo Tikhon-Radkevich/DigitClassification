@@ -1,12 +1,14 @@
 from tensorflow.keras.models import load_model
 import numpy as np
 
-model = load_model("digit_classification_model.h5")
 
+class DigitClassifier:
+    def __init__(self, model_path):
+        self.model = model = load_model(model_path)
 
-def get_digit(digit):
-    image = np.array(digit)
-    image = image.reshape(1, 28, 28, 1)
-    prediction = model.predict(image, verbose=0)
-    predicted_digit = np.argmax(prediction)
-    return predicted_digit
+    def get_digit(self, digit):
+        image = np.array(digit)
+        image = image.reshape(1, 28, 28, 1)
+        prediction = self.model.predict(image, verbose=0)
+        predicted_digit = np.argmax(prediction)
+        return predicted_digit
